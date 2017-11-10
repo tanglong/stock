@@ -2,6 +2,13 @@
 
 import re
 from urllib2 import urlopen
+import datetime as dt
+import tushare as ts
+import matplotlib.pyplot as plt
+from matplotlib import style
+import pandas as pd
+import pandas_datareader.data as web
+
 
 stock_CodeUrl = 'http://quote.eastmoney.com/stocklist.html'
 
@@ -18,8 +25,17 @@ def urlTolist(url):
             allCodeList.append(item)
     return allCodeList
 
+start = dt.datetime(2015,1,1)
+start_date = start.strftime('%Y-%m-%d')
+end = dt.datetime(2017,12,31)
+end_date = end.strftime('%Y-%m-%d')
 
 allCodelist = urlTolist(stock_CodeUrl)
 for code in allCodelist:
     if u"银行" in code[1]:
         print(code[1])
+        print(code[0])
+        df_his = ts.get_hist_data(code[0],start_date,end_date) 
+
+        name = code[1].decode('utf-8') + '.csv'
+        df_his.to_csv(name)
